@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+
+*.log
+build/
+dist/
+*.spec
+
+.venv/
+venv/
+env/
+
+.claude/

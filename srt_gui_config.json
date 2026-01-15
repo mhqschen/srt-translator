@@ -1,0 +1,135 @@
+{
+  "api_configs": {
+    "DS官方": {
+      "api_endpoint": "https://api.deepseek.com/v1/chat/completions",
+      "api_key": "111",
+      "model": "deepseek-chat"
+    },
+    "DS-百炼": {
+      "api_endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "api_key": "111",
+      "model": "deepseek-v3.2-exp"
+    }
+  },
+  "current_api_config": "DS官方",
+  "api_details_visible": true,
+  "api_endpoint": "https://api.deepseek.com/v1/chat/completions",
+  "api_key": "111",
+  "model": "deepseek-chat",
+  "batch_size": "30",
+  "context_size": "5",
+  "threads": "20",
+  "no_resume": false,
+  "temperature": "0.8",
+  "literal_align": false,
+  "structured_output": false,
+  "professional_mode": false,
+  "presets": {
+    "1": {
+      "name": "跑步与跑鞋评测",
+      "content": "该字幕内容为跑步相关。\n请使用更加口语化、生活化的翻译风格，避免过于正式的书面语，可以适当使用赛博发疯风格的幽默。对于著名的人名、地名、作品名等，可以翻译为中文，但是冷门的则不必强行翻译。日韩文的生冷人名、地名等，直接翻译为英文罗马音即可。\n\n对于比赛时间和跑步配速，翻译为“430”和“245”这种形式即可，而不是“4:30”或“2:45”。\n\nSockney Endorphin Speed 5 应该翻译为“索康尼啡速5”，Endorphin Pro 5 则是啡鹏5，Endorphin Elite则是啡翼，Triumph则是索康尼胜利，Ride则是驭途，Endorphin Azura不翻译，其他地方请灵活变通。\nBrooks Glycerin 23 应该翻译为“布鲁克斯甘油23”，其他地方灵活变通。"
+    },
+    "2": {
+      "name": "数毛社",
+      "content": "翻译内容为主机游戏新闻和主机游戏评测的视频访谈节目。请使用更加口语化的翻译风格，可以适当使用赛博发疯风格的幽默，避免过于正式的书面语。"
+    },
+    "3": {
+      "name": "赛博语言风格",
+      "content": "请使用更加口语化、生活化的翻译风格，避免过于正式的书面语。对话要符合中文表达习惯，自然流畅。可以适当使用赛博发疯风格的幽默。\n对于著名的人名、地名、作品名等，可以翻译为中文，但是冷门的则不必强行翻译。日韩文的生冷人名、地名等，直接翻译为英文罗马音即可。"
+    },
+    "4": {
+      "name": "流畅生活口语",
+      "content": "请使用更加口语化、生活化的翻译风格，避免过于正式的书面语。对话要符合中文表达习惯，自然流畅。\n对于著名的人名、地名、作品名等，可以翻译为中文，但是冷门的则不必强行翻译。日韩文的生冷人名、地名等，直接翻译为英文罗马音即可。"
+    },
+    "5": {
+      "name": "商务用语",
+      "content": "使用正式的商务中文表达，避免过于口语化。商务术语如CEO、CFO、董事会等使用标准翻译。数字、金额、百分比等要准确翻译。保持专业性和严谨性，符合商务场合的表达习惯。"
+    },
+    "6": {
+      "name": "学术文献",
+      "content": "使用规范的学术中文表达，保持严谨性。学术术语要使用标准的中文翻译。引用、参考文献、图表等要按中文学术规范翻译。保持客观性和准确性，避免主观色彩。"
+    },
+    "7": {
+      "name": "日常对话",
+      "content": "使用自然流畅的中文日常对话表达。俚语、口头禅要翻译为对应的中文表达。保持对话的自然感和亲切感。年龄、性别、社会身份要体现在语言风格中。"
+    },
+    "8": {
+      "name": "跑步-新闻传播风",
+      "content": "该字幕内容为跑步相关。翻译时保持新闻播报的正式性和客观性。使用标准的新闻用语和表达方式。人名地名采用通用译名，数据要准确。保持新闻的严肃性和权威性。"
+    },
+    "9": {
+      "name": "医学健康",
+      "content": "翻译医学健康类内容时保持专业准确。医学术语使用标准中文表达。药物名称、疾病名称使用通用译名。涉及健康建议时保持严谨客观的表述。"
+    },
+    "10": {
+      "name": "美食烹饪",
+      "content": "翻译美食烹饪类内容时保持生动诱人的表达。食材名称使用中文常见名称。烹饪方法和步骤要清晰易懂。保持美食内容的诱人和温馨感。"
+    }
+  },
+  "corrector_presets": {
+    "1": {
+      "name": "跑鞋评测",
+      "content": "字幕内容为跑步装备、跑鞋评测领域。\n\n原字幕是whisper软件识别的，会听错一些读音相近的单词。只修改发音相近的，再次强调，只修改发音相近的！不要以你有限的知识去轻易修改这类名词，比如switch 2、Gamescom 2025等明显是是正确的，因为是后期新发售的机型或新举办的新展会活动。还有，原字幕中明明说的是 Switch ，那么你就不要添油加醋地纠正成 Switch 2。比如，原字幕中明明说的是 FF Leap ，那么你就不要纠错为FF Blast，他们的发音完全不一样，软件只会听错发音相近的词。再如，原字幕中明明说的是 FF Leap 和 Pro Evo 2，那么你就不要纠错为FF Blast 和 Pro Evo 1其他类似情况请灵活变通。\n\n再举几个例子。ASICS被识别成了A6；ASICS GT-2000 14 被识别成了 ASICS GT 2014；Gel Kayano 也经常被听错。其他常见跑鞋品牌以及跑鞋型号的错别词注意识别。\n\n诸如 Sub 20 5K （5公里跑进20分钟）经常会被听错为 Sub 25K，其他类似的情况也需要通过上下文仔细判断。\n\n比赛时间和跑步配速一般都会简写成430、345这样的，你不需要纠正为4:30或3:45。\n\n不要改变句子中单词的顺序，也不要改变语法。\n\n该视频标题与内容介绍："
+    },
+    "2": {
+      "name": "游戏内容1",
+      "content": "字幕内容为主机游戏领域，涉及到PC硬件、游戏图形技术、计算机等领域。以Digital Foundry的节目内容为主。\n\n原字幕是whisper软件识别的，会听错一些读音相近的单词。只修改发音相近的，再次强调，只修改发音相近的！不要以你有限的知识去轻易修改这类名词，比如switch 2、Gamescom 2025等明显是是正确的，因为是后期新发售的机型或新举办的新展会活动。还有，原字幕中明明说的是 Switch ，那么你就不要添油加醋地纠正成 Switch 2。他们的发音完全不一样，软件只会听错读音相近的词。其他类似情况请灵活变通。\n\n不要改变句子中单词的顺序，也不要改变语法。\n\n该视频标题与内容介绍："
+    },
+    "3": {
+      "name": "跑步",
+      "content": "你是一个字幕听写结果纠错的专家。字幕内容为跑步相关，可能涵盖了运动生理学、健康、跑步装备、跑鞋评测等领域。\n\n原字幕是whisper软件识别的，会听错一些读音相近的单词。只修改发音相近的，再次强调，只修改发音相近的！不要以你有限的知识去轻易修改这类名词，比如switch 2、Gamescom 2025等明显是是正确的，因为是后期新发售的机型或新举办的新展会活动。还有，原字幕中明明说的是 Switch ，那么你就不要添油加醋地纠正成 Switch 2 。再如，原字幕中明明说的是 FF Leap ，那么你就不要纠错为FF Blast，他们的发音完全不一样，软件只会听错发音相近的词。其他类似情况请灵活变通。\n\n比赛时间和跑步配速一般都会简写为430、345这样的形式，不需要纠正为4:30或3:45。\n\n诸如 Sub 20 5K （5公里跑进20分钟）经常会被听错为 Sub 25K，其他类似的情况也需要通过上下文仔细判断。\n\n不要改变句子中单词的顺序，也不要改变语法。\n\n该视频标题与内容介绍："
+    },
+    "4": {
+      "name": "Jessie Inchauspé",
+      "content": "该字幕的内容为营养学、生物化学、生理学等相关领域。\n\n原字幕是whisper软件识别的，会听错一些读音相近的单词。只修改发音相近的，再次强调，只修改发音相近的！不要以你有限的知识去轻易修改这类名词，比如switch 2、Gamescom 2025等明显是是正确的，因为是后期新发售的机型或新举办的新展会活动。还有，原字幕中明明说的是 Switch ，那么你就不要添油加醋地纠正成 Switch 2 。再如，原字幕中明明说的是 FF Leap ，那么你就不要纠错为FF Blast，他们的发音完全不一样，软件只会听错发音相近的词。其他类似情况请灵活变通。\n\n视频里的人是一个法国美女，名字叫Jessie Inchauspé，软件会把她的名字识别错，注意灵活识别。\n\n不要改变句子中单词的顺序，也不要改变语法。"
+    },
+    "5": {
+      "name": "马斯克",
+      "content": "该字幕内容涉及到相关物理、工程、前沿科学和技术、人工智能、神经科学等领域。\n\n原字幕是whisper软件识别的，会听错一些读音相近的单词。只修改发音相近的，再次强调，只修改发音相近的！不要以你有限的知识去轻易修改这类名词，比如switch 2、Gamescom 2025等明显是是正确的，因为是后期新发售的机型或新举办的新展会活动。还有，原字幕中明明说的是 Switch ，那么你就不要添油加醋地纠正成 Switch 2 。再如，原字幕中明明说的是 FF Leap ，那么你就不要纠错为FF Blast，他们的发音完全不一样，软件只会听错发音相近的词。其他类似情况请灵活变通。\n\n不要改变句子中单词的顺序，也不要改变语法。"
+    },
+    "6": {
+      "name": "商务纠错-测试",
+      "content": "请修正语音识别错误，保持商务用语的正式性和准确性。"
+    },
+    "7": {
+      "name": "医学纠错",
+      "content": "该字幕内容涉及生理学、医学、健康等领域。\n\n原字幕是whisper软件识别的，会听错一些读音相近的单词。只修改发音相近的，再次强调，只修改发音相近的！不要以你有限的知识去轻易修改这类名词，比如switch 2、Gamescom 2025等明显是是正确的，因为是后期新发售的机型或新举办的新展会活动。还有，原字幕中明明说的是 Switch ，那么你就不要添油加醋地纠正成 Switch 2 。再如，原字幕中明明说的是 FF Leap ，那么你就不要纠错为FF Blast，他们的发音完全不一样，软件只会听错发音相近的词。其他类似情况请灵活变通。\n\n不要改变句子中单词的顺序，也不要改变语法。"
+    },
+    "8": {
+      "name": "RunnerLoc播客",
+      "content": "这是RunnerLoc频道的跑步内容播客节目，注意RunnerLoc相关错误拼写。"
+    }
+  },
+  "corrector": {
+    "batch_size": "50",
+    "threads": "20",
+    "temperature": "0.2",
+    "context_window": "5",
+    "timeout_seconds": "300",
+    "batch_mode": "真批量",
+    "format_options": {
+      "clean_newlines": false,
+      "remove_spaces": true,
+      "normalize_punctuation": true,
+      "smart_line_break": false,
+      "smart_spacing": true,
+      "smart_punctuation": true,
+      "fluency_optimization": false
+    },
+    "user_prompt": "字幕内容为跑步装备、跑鞋评测领域。\n\n原字幕是whisper软件识别的，会听错一些读音相近的单词。只修改发音相近的，再次强调，只修改发音相近的！不要以你有限的知识去轻易修改这类名词，比如switch 2、Gamescom 2025等明显是是正确的，因为是后期新发售的机型或新举办的新展会活动。还有，原字幕中明明说的是 Switch ，那么你就不要添油加醋地纠正成 Switch 2。比如，原字幕中明明说的是 FF Leap ，那么你就不要纠错为FF Blast，他们的发音完全不一样，软件只会听错发音相近的词。再如，原字幕中明明说的是 FF Leap 和 Pro Evo 2，那么你就不要纠错为FF Blast 和 Pro Evo 1其他类似情况请灵活变通。\n\n再举几个例子。ASICS被识别成了A6；ASICS GT-2000 14 被识别成了 ASICS GT 2014；Gel Kayano 也经常被听错。其他常见跑鞋品牌以及跑鞋型号的错别词注意识别。\n\n诸如 Sub 20 5K （5公里跑进20分钟）经常会被听错为 Sub 25K，其他类似的情况也需要通过上下文仔细判断。\n\n比赛时间和跑步配速一般都会简写成430、345这样的，你不需要纠正为4:30或3:45。\n\n不要改变句子中单词的顺序，也不要改变语法。\n\n该视频标题与内容介绍：\nBrooks Ghost 18 First Look | A Classic Training Workhorse For Any Runner!\nThe Brooks Ghost 18 is returning in 2026 and continues to deliver reliable comfort for all of your daily training. With a balanced underfoot feel and a slightly refined fit, the Brooks Ghost 18 has everything you need for racking up the miles!"
+  },
+  "polisher": {
+    "batch_size": "30",
+    "context_size": "2",
+    "threads": "20",
+    "temperature": "0.6",
+    "resume": true,
+    "auto_verify": true,
+    "length_policy": "cn_speed_experimental_2",
+    "corner_quotes": true
+  },
+  "speed_thresholds": {
+    "cn_speed_min": 2.0,
+    "cn_speed_max": 8.0
+  }
+}

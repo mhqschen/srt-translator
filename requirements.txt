@@ -1,0 +1,31 @@
+# SRT字幕翻译工具依赖包
+# SRT Subtitle Translation Tool Dependencies
+
+# 核心依赖 / Core Dependencies
+requests>=2.25.1          # HTTP请求库，用于API调用
+colorama>=0.4.4           # 跨平台彩色终端输出
+
+# 可选依赖 / Optional Dependencies  
+# tkinter                 # GUI界面库（通常随Python预装）
+
+# 开发依赖 / Development Dependencies (可选)
+# pytest>=6.0            # 单元测试框架
+# black>=21.0             # 代码格式化工具
+# flake8>=3.8             # 代码风格检查
+
+# 系统要求 / System Requirements
+# Python>=3.8
+# UTF-8编码支持 / UTF-8 encoding support
+
+# 安装说明 / Installation Instructions
+# 
+# 国内用户推荐使用镜像源（速度更快）:
+# pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+# 
+# 其他国内镜像源选择:
+# 清华大学: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests colorama
+# 豆瓣镜像: pip install -i https://pypi.douban.com/simple requests colorama
+# 阿里镜像: pip install -i https://mirrors.aliyun.com/pypi/simple requests colorama
+# 
+# 海外用户或镜像失效时使用官方源:
+# pip install -r requirements.txt
