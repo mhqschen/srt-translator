@@ -1,247 +1,529 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SRT 字幕纠错详细指南</title>
+  <title>SRT 字幕纠错详细指南 | 专业版</title>
+  <!-- 引入国内加速的 Animate.css -->
+  <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
   <style>
     :root {
-      --bg: #f5f5f5;
-      --text: #333;
-      --muted: #6c757d;
-      --card: #fff;
-      --border: #e9ecef;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      /* 黑金流光配色：沉稳、专业、奢华 */
+      --primary: #ffb300;
+      /* 琥珀金 */
+      --primary-hover: #ffca28;
+      --bg-core: #0f0f0f;
+      /* 核心黑 */
+      --bg-card: rgba(25, 25, 25, 0.85);
+      --border-light: rgba(255, 179, 0, 0.15);
+      /* 淡金边框 */
+      --text-main: #e0e0e0;
+      --text-muted: #9e9e9e;
+      --highlight-bg: rgba(255, 179, 0, 0.08);
+    }
 
-      --sky-bg: #f4f9ff;
-      --sky-border: #cfe3ff;
-      --sky-accent: #2f80ed;
-
-      --mint-bg: #f3fff7;
-      --mint-border: #ccefd8;
-      --mint-accent: #27ae60;
-
-      --violet-bg: #fbf7ff;
-      --violet-border: #e3d2ff;
-      --violet-accent: #8e44ad;
-
-      --lemon-bg: #fffbf0;
-      --lemon-border: #ffe6a1;
-      --lemon-accent: #f2994a;
-
-      --peach-bg: #fff6f0;
-      --peach-border: #ffd5bf;
-      --peach-accent: #e74c3c;
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      font-family: "Microsoft YaHei", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.75;
       margin: 0;
-      padding: 20px;
-      background: var(--bg);
-      color: var(--text);
+      padding: 0;
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+      background-color: var(--bg-core);
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(40, 40, 40, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 85% 85%, rgba(60, 40, 10, 0.2) 0%, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* 顶部装饰线 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #000, var(--primary), #000);
+      z-index: 999;
     }
 
     .container {
-      max-width: 980px;
+      max-width: 900px;
       margin: 0 auto;
-      background: var(--card);
-      padding: 28px;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+      padding: 60px 24px;
+    }
+
+    /* 标题区域 */
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     h1 {
-      color: #2c3e50;
-      text-align: center;
-      margin: 0 0 10px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid var(--sky-accent);
+      font-size: 2.8rem;
+      margin: 0;
+      font-weight: 700;
+      background: linear-gradient(to bottom, #fff 40%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
     }
 
     .subtitle {
-      text-align: center;
-      color: var(--muted);
-      margin: 0 0 18px;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+      font-weight: 300;
     }
 
-    .card {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 18px 14px;
-      margin: 16px 0;
-      background: #fff;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 6px;
-      background: var(--sky-accent);
-      opacity: 0.95;
-    }
-
-    .card--sky { background: var(--sky-bg); border-color: var(--sky-border); }
-    .card--sky::before { background: var(--sky-accent); }
-
-    .card--mint { background: var(--mint-bg); border-color: var(--mint-border); }
-    .card--mint::before { background: var(--mint-accent); }
-
-    .card--violet { background: var(--violet-bg); border-color: var(--violet-border); }
-    .card--violet::before { background: var(--violet-accent); }
-
-    .card--lemon { background: var(--lemon-bg); border-color: var(--lemon-border); }
-    .card--lemon::before { background: var(--lemon-accent); }
-
-    .card--peach { background: var(--peach-bg); border-color: var(--peach-border); }
-    .card--peach::before { background: var(--peach-accent); }
-
-    .card h2 {
-      margin: 0 0 10px;
-      padding-left: 10px;
-      font-size: 18px;
-      color: #2c3e50;
-    }
-
-    .card h3 {
-      margin: 14px 0 8px;
-      padding-left: 10px;
-      font-size: 15px;
-      color: #2c3e50;
-    }
-
-    ul, ol { padding-left: 22px; margin: 8px 0; }
-    li { margin: 6px 0; }
-
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 1px 6px;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-    }
-
-    .callout {
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px dashed rgba(0, 0, 0, 0.12);
+    /* 卡片通用样式 */
+    .edu-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
       border-radius: 12px;
-      padding: 12px 14px;
-      margin: 12px 0;
+      padding: 32px;
+      margin-bottom: 60px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      /* 硬件加速优化 */
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    .footer {
-      margin-top: 26px;
-      padding-top: 14px;
-      border-top: 2px solid rgba(0, 0, 0, 0.06);
-      text-align: center;
-      color: var(--muted);
+    .edu-card:hover {
+      transform: translateY(-2px) translateZ(0);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 179, 0, 0.3);
     }
 
-    .kv {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 6px 10px;
-      margin: 10px 0 0;
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 24px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+    }
+
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 24px;
+      background-color: var(--primary);
+      margin-right: 12px;
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      color: #fff;
+      margin-top: 48px;
+      margin-bottom: 24px;
+      padding-left: 10px;
+      border-left: 3px solid #444;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    ul,
+    ol {
+      padding-left: 24px;
+      color: #ccc;
+      margin-bottom: 32px;
+    }
+
+    li {
+      margin-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    /* 专业代码块 */
+    .code-block {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 16px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9em;
+      color: #e6db74;
+      /* 柔和黄 */
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    .cmd-text {
+      color: #a6e22e;
+    }
+
+    /* 柔和绿 */
+    .highlight-text {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* 提示框 */
+    .note-box {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--primary);
+      padding: 20px;
+      border-radius: 4px;
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+
+    .note-box strong {
+      color: var(--primary);
+    }
+
+    /* 步骤指示器 */
+    .step-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+
+    /* 参数表 */
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.95em;
+    }
+
+    .param-table th,
+    .param-table td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .param-table th {
+      color: var(--text-muted);
+      font-weight: normal;
+      width: 140px;
+    }
+
+    .param-table td {
+      color: #fff;
+      font-family: 'Consolas', monospace;
+    }
+
+    /* 专家参数胶囊 */
+    .expert-pill {
+      display: inline-block;
+      background: rgba(40, 40, 40, 0.6);
+      border: 1px solid #444;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      margin-right: 12px;
+      margin-bottom: 8px;
+    }
+
+    .expert-pill b {
+      color: var(--primary);
+    }
+
+    /* 动画配置 */
+    .delay-1 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+      animation-delay: 0.3s;
+    }
+
+    .delay-4 {
+      animation-delay: 0.4s;
+    }
+
+    /* 启动方式切换标签页 */
+    .launch-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #888;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      color: #ccc;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: bold;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* 自定义高性能动画 */
+    @keyframes smoothSlideUp {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes smoothFadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .animate-card {
+      opacity: 0;
+      /* 初始隐藏 */
+      animation: smoothSlideUp 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+    }
+
+    .animate-header {
+      opacity: 0;
+      animation: smoothFadeIn 1s ease-out forwards;
+    }
+
+    /* 阶梯延迟 */
+    .delay-1 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+      animation-delay: 0.3s;
+    }
+
+    .delay-4 {
+      animation-delay: 0.4s;
+    }
+
+    /* 分隔线 */
+    .separation-line {
+      border: 0;
+      height: 1px;
+      margin: 40px 0;
+      background-image: linear-gradient(to right, rgba(255, 179, 0, 0), rgba(255, 179, 0, 0.4), rgba(255, 179, 0, 0));
     }
   </style>
-</head>
-<body>
-  <div class="container">
-    <h1>SRT 字幕纠错详细指南</h1>
-    <p class="subtitle">修复 ASR（如 Whisper）识别导致的错词/错字、标点与基础格式问题，并提供“审核页”逐条确认。</p>
+  <script>
+    function switchTab(mode) {
+      // 切换按钮状态
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
 
-    <section class="card card--sky">
-      <h2>先把软件跑起来（Python 版）</h2>
-      <ol>
-        <li>安装 Python 3.8+（安装时建议勾选 “Add Python to PATH”）。</li>
-        <li>在本项目目录打开命令行，安装依赖：<div style="margin-top:8px;"><span class="mono">python -m pip install -r requirements.txt</span></div></li>
-        <li>启动方式二选一：
+      // 切换内容显示
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById('tab-' + mode).classList.add('active');
+    }
+  </script>
+</head>
+
+<body>
+
+  <div class="container">
+    <header class="animate-header">
+      <h1>SRT 字幕纠错指南</h1>
+      <p class="subtitle">让字幕文本准确无误的专业工作流</p>
+    </header>
+
+    <!-- 第一步：启动 -->
+    <section class="edu-card animate-card delay-1">
+      <h2>第一步：启动软件</h2>
+      <p>请根据您下载的版本，选择对应的启动方式：</p>
+
+      <div class="launch-tabs">
+        <button class="tab-btn active" onclick="switchTab('green')">🟢 绿色便携版 (推荐)</button>
+        <button class="tab-btn" onclick="switchTab('python')">🐍 源码运行版</button>
+      </div>
+
+      <!-- Tab内容：绿色版 -->
+      <div id="tab-green" class="tab-content active">
+        <p>适合大多数用户，无需安装环境，解压即用。</p>
+        <ol>
+          <li>找到解压后的程序文件夹（请勿放在含中文的路径太深处）。</li>
+          <li>找到名为 <span class="highlight-text">srt_translator_gui_v...</span> 的主程序文件（如 v2.8）。</li>
+          <li><strong>双击运行</strong>即可启动。<br><span style="font-size:0.85em; color:#888;">* 注意：若您的电脑隐藏了文件扩展名，文件名可能不显示 .exe
+              后缀。</span></li>
+        </ol>
+      </div>
+
+      <!-- Tab内容：源码版 -->
+      <div id="tab-python" class="tab-content">
+        <p>适合开发者或已安装 Python 环境的用户。</p>
+        <ol>
+          <li>在软件目录打开终端，安装依赖：<div class="code-block cmd-text">pip install -r requirements.txt</div>
+          </li>
+          <li>双击运行 <span class="highlight-text">run_gui.bat</span> 脚本启动可视化界面。</li>
+        </ol>
+        <p style="font-size:0.9em; color:#888;">* 也可以使用命令 python srt_gui.py 启动。</p>
+      </div>
+    </section>
+
+    <!-- 第二步：配置 -->
+    <section class="edu-card animate-card delay-2">
+      <h2>第二步：连接 AI 大脑 (API 配置)</h2>
+      <p>软件启动后，默认显示“<strong>字幕翻译器</strong>”页面。请在此停留，先完成核心的 API 配置。</p>
+
+      <h3>1. 定位设置区域</h3>
+      <p>界面左侧为“API 设置”面板，用于配置 AI 接口参数。</p>
+
+      <h3>2. 参数填写参考</h3>
+      <div class="note-box">
+        <strong>提示：</strong> 请根据您所购买的服务商填写下方参数。
+      </div>
+
+      <table class="param-table">
+        <tr>
+          <th colspan="2" style="color:var(--primary); border-bottom: 2px solid rgba(255,179,0,0.3);">推荐方案：DeepSeek
+            (深度求索)</th>
+        </tr>
+        <tr>
+          <th>API 地址</th>
+          <td class="cmd-text">https://api.deepseek.com/v1/chat/completions</td>
+        </tr>
+        <tr>
+          <th>模型名称</th>
+          <td class="highlight-text">deepseek-chat</td>
+        </tr>
+      </table>
+
+      <div style="height: 20px;"></div>
+      <hr class="separation-line" style="margin: 20px 0;">
+
+      <table class="param-table">
+        <tr>
+          <th colspan="2" style="color:#4caf50; border-bottom: 2px solid rgba(76,175,80,0.3);">免费方案：Google Gemini</th>
+        </tr>
+        <tr>
+          <th>API 地址</th>
+          <td class="cmd-text" style="font-size:0.8em;">
+            https://generativelanguage.googleapis.com/v1beta/openai/chat/completions</td>
+        </tr>
+        <tr>
+          <th>模型名称</th>
+          <td>
+            gemini-2.0-flash-exp<br>
+            <span style="color:#888; font-size:0.85em;">(备选：gemini-1.5-pro, gemini-2.0-pro-exp-02-05)</span>
+          </td>
+        </tr>
+        <tr>
+          <th>注意事项</th>
+          <td style="color:#ff6b6b; font-size:0.9em;">
+            如使用 <strong>gemini-3-pro-preview</strong>，必须将线程数限制为 <strong>5</strong>，以免被封禁。
+          </td>
+        </tr>
+      </table>
+
+      <p style="margin-top:20px;">💡 填写完毕后，请点击 <span class="highlight-text">“测试 API 连接”</span> 按钮，显示“连接成功”即为配置正确。</p>
+    </section>
+
+    <!-- 第三步：操作 -->
+    <section class="edu-card animate-card delay-3">
+      <h2>第三步：执行纠错任务</h2>
+      <p>点击顶部标签切换至“<strong>字幕纠错器</strong>”。此模块用于修复因语音识别 (ASR) 导致的同音错误。</p>
+
+      <h3>1. 导入文件</h3>
+      <p>将目标 SRT 文件拖入输入框，或通过“浏览”按钮选择。</p>
+
+      <hr class="separation-line">
+
+      <h3>2. 核心参数配置</h3>
+      <p>为确保最佳纠错效果，建议调整以下参数，其余保持默认：</p>
+
+      <div>
+        <div class="expert-pill">
+          <b>批次大小: 50</b><br>
+          <span style="font-size:0.8em; color:#888;">适合简单纠错任务，大批次可提升处理速度。</span>
+        </div>
+        <div class="expert-pill">
+          <b>温度: 0.2</b><br>
+          <span style="font-size:0.8em; color:#888;">低温度设定可抑制 AI 幻觉，防止非必要的改写。</span>
+        </div>
+      </div>
+
+      <hr class="separation-line">
+
+      <h3 style="margin-top: 24px;">3. 启动任务</h3>
+      <p>点击“开始纠错”按钮，软件将自动开始批量处理。</p>
+    </section>
+
+    <!-- 第四步：审核 -->
+    <section class="edu-card animate-card delay-4">
+      <h2>第四步：人工审核与确认</h2>
+      <p>人工审核是确保专业质量的关键环节。</p>
+      <ul>
+        <li>处理完成后，软件自动跳转至“<strong>纠错/润色审核</strong>”页面。</li>
+        <li>左侧展示原文，右侧为修正后的文本。</li>
+        <li>
+          <strong>操作说明：</strong>
           <ul>
-            <li>双击 <span class="mono">run_gui.bat</span></li>
-            <li>命令行运行 <span class="mono">python srt_gui.py</span></li>
+            <li><strong>AI 修改正确：</strong> 无需操作。</li>
+            <li><strong>AI 修改错误：</strong> （如错误修改了人名）在对应行单击<strong>鼠标右键</strong>，选择“<strong>保持原文</strong>”。</li>
+            <li><strong>均不准确：</strong> 双击右侧文本框进行<strong>手动编辑</strong>。</li>
           </ul>
         </li>
-      </ol>
-    </section>
-
-    <section class="card card--mint">
-      <h2>适用场景</h2>
-      <ul>
-        <li>字幕来自 Whisper/剪辑软件自动识别，存在大量“同音错词/错字”。</li>
-        <li>希望尽量保持原句结构，只修正“发音相近导致的识别错误”。</li>
-        <li>需要在 AI 纠错后逐条审核确认，避免误改专有名词。</li>
       </ul>
-    </section>
-
-    <section class="card card--lemon">
-      <h2>使用前准备</h2>
-      <div class="callout">
-        <strong>强烈建议先备份原始字幕</strong>（复制一份同目录即可）。
-      </div>
-      <ul>
-        <li>尽量使用 <span class="mono">UTF-8</span> 编码的 <span class="mono">.srt</span> 文件。</li>
-        <li>文件路径尽量避免过深目录；中文路径通常没问题。</li>
-        <li>确保 API 可用（可在“字幕翻译器”页测试 API 连接）。</li>
-      </ul>
-    </section>
-
-    <section class="card card--violet">
-      <h2>操作步骤（推荐流程）</h2>
-
-      <h3>1）进入“字幕纠错器”标签页</h3>
-      <ul>
-        <li>选择 <strong>输入 SRT</strong>（原始识别字幕）。</li>
-        <li>设置 <strong>输出 SRT</strong>（建议自动生成或手动指定新文件名）。</li>
-      </ul>
-
-      <h3>2）设置参数（推荐）</h3>
-      <div class="kv">
-        <div>批次大小</div><div><span class="mono">50</span></div>
-        <div>线程数</div><div><span class="mono">20</span></div>
-        <div>温度</div><div><span class="mono">0.2</span></div>
-        <div>上下文窗口</div><div><span class="mono">5</span></div>
-        <div>超时秒数</div><div><span class="mono">300</span></div>
-        <div>批量模式</div><div><span class="mono">真批量</span></div>
-      </div>
-      <div class="callout">
-        <strong>不稳定时：</strong>优先把线程数降到 <span class="mono">5</span>，再把批次大小降到 <span class="mono">10</span>。
-      </div>
-
-      <h3>3）开始纠错（可强制停止）</h3>
-      <ul>
-        <li>点击“开始纠错”。</li>
-        <li>运行中点击“停止纠错”，会以<strong>强制停止</strong>为目标终止任务。</li>
-        <li>结束后会自动跳转到“纠错/润色审核”页，方便你立刻审核。</li>
-      </ul>
-
-      <h3>4）在“纠错/润色审核”里逐条确认</h3>
-      <ul>
-        <li>你可以选择保留原文、接受纠错或手工编辑。</li>
-        <li>手动编辑后记得保存修改，再导出最终结果。</li>
-      </ul>
-    </section>
-
-    <section class="card card--peach">
-      <h2>常见建议</h2>
-      <ul>
-        <li><strong>纠错策略：</strong>优先纠正“发音相近导致的错误”，不要随意改写语序或语法。</li>
-        <li><strong>专有名词：</strong>遇到型号、人名、地名等，建议在审核页重点核对。</li>
-        <li><strong>稳定性：</strong>不稳定时先降并发（线程数/批次大小）。</li>
-      </ul>
-      <div class="callout">
-        <strong>注意：</strong>AI 纠错并不保证 100% 正确，最终以人工审核为准。
+      <div class="note-box">
+        <strong>注意：</strong> 审核完成后，必须点击 <strong>“保存修改”</strong> 按钮以应用更改。
       </div>
     </section>
 
-    <div class="footer">文档对应 GUI：SRT 字幕翻译工具 v2.8</div>
+    <div style="text-align:center; color:#666; font-size: 0.9rem; margin-top: 40px;">
+      SRT Translator · 2026
+    </div>
+
   </div>
 </body>
-</html>
 
+</html>

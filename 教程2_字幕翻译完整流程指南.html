@@ -1,217 +1,559 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SRT 字幕翻译完整流程指南</title>
+  <title>SRT 字幕翻译完整流程指南 | 专业版</title>
+  <!-- 引入国内加速的 Animate.css -->
+  <link href="https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
   <style>
     :root {
-      --bg: #f5f5f5;
-      --text: #333;
-      --muted: #6c757d;
-      --card: #fff;
-      --border: #e9ecef;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      /* 黑金流光配色 */
+      --primary: #ffb300;
+      /* 琥珀金 */
+      --primary-hover: #ffca28;
+      --bg-core: #0f0f0f;
+      /* 核心黑 */
+      --bg-card: rgba(25, 25, 25, 0.85);
+      --border-light: rgba(255, 179, 0, 0.15);
+      --text-main: #e0e0e0;
+      --text-muted: #9e9e9e;
+      --highlight-bg: rgba(255, 179, 0, 0.08);
+      /* 提示框背景 */
+    }
 
-      --sky-bg: #f4f9ff;
-      --sky-border: #cfe3ff;
-      --sky-accent: #2f80ed;
-
-      --mint-bg: #f3fff7;
-      --mint-border: #ccefd8;
-      --mint-accent: #27ae60;
-
-      --violet-bg: #fbf7ff;
-      --violet-border: #e3d2ff;
-      --violet-accent: #8e44ad;
-
-      --lemon-bg: #fffbf0;
-      --lemon-border: #ffe6a1;
-      --lemon-accent: #f2994a;
-
-      --peach-bg: #fff6f0;
-      --peach-border: #ffd5bf;
-      --peach-accent: #e74c3c;
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      font-family: "Microsoft YaHei", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.75;
       margin: 0;
-      padding: 20px;
-      background: var(--bg);
-      color: var(--text);
+      padding: 0;
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+      background-color: var(--bg-core);
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(40, 40, 40, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 85% 85%, rgba(60, 40, 10, 0.2) 0%, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* 顶部金线 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #000, var(--primary), #000);
+      z-index: 999;
     }
 
     .container {
-      max-width: 1040px;
+      max-width: 900px;
       margin: 0 auto;
-      background: var(--card);
-      padding: 28px;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+      padding: 60px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 60px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     h1 {
-      color: #2c3e50;
-      text-align: center;
-      margin: 0 0 10px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid var(--peach-accent);
+      font-size: 2.8rem;
+      margin: 0;
+      font-weight: 700;
+      background: linear-gradient(to bottom, #fff 40%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
     }
 
     .subtitle {
-      text-align: center;
-      color: var(--muted);
-      margin: 0 0 18px;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+      font-weight: 300;
     }
 
-    .card {
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 18px 14px;
-      margin: 16px 0;
-      background: #fff;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 6px;
-      background: var(--peach-accent);
-      opacity: 0.95;
-    }
-
-    .card--sky { background: var(--sky-bg); border-color: var(--sky-border); }
-    .card--sky::before { background: var(--sky-accent); }
-
-    .card--mint { background: var(--mint-bg); border-color: var(--mint-border); }
-    .card--mint::before { background: var(--mint-accent); }
-
-    .card--violet { background: var(--violet-bg); border-color: var(--violet-border); }
-    .card--violet::before { background: var(--violet-accent); }
-
-    .card--lemon { background: var(--lemon-bg); border-color: var(--lemon-border); }
-    .card--lemon::before { background: var(--lemon-accent); }
-
-    .card--peach { background: var(--peach-bg); border-color: var(--peach-border); }
-    .card--peach::before { background: var(--peach-accent); }
-
-    .card h2 {
-      margin: 0 0 10px;
-      padding-left: 10px;
-      font-size: 18px;
-      color: #2c3e50;
-    }
-
-    .card h3 {
-      margin: 14px 0 8px;
-      padding-left: 10px;
-      font-size: 15px;
-      color: #2c3e50;
-    }
-
-    ul, ol { padding-left: 22px; margin: 8px 0; }
-    li { margin: 6px 0; }
-
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      background: rgba(255, 255, 255, 0.7);
-      padding: 1px 6px;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-    }
-
-    .callout {
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px dashed rgba(0, 0, 0, 0.12);
+    /* 卡片通用样式 */
+    .edu-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
       border-radius: 12px;
-      padding: 12px 14px;
-      margin: 12px 0;
+      padding: 32px;
+      margin-bottom: 60px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      /* 硬件加速优化 */
+      will-change: transform, opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    .callout strong { color: #2c3e50; }
+    .edu-card:hover {
+      transform: translateY(-2px) translateZ(0);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 179, 0, 0.3);
+    }
 
-    .footer {
-      margin-top: 26px;
-      padding-top: 14px;
-      border-top: 2px solid rgba(0, 0, 0, 0.06);
-      text-align: center;
-      color: var(--muted);
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 24px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+    }
+
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 24px;
+      background-color: var(--primary);
+      margin-right: 12px;
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      color: #fff;
+      margin-top: 48px;
+      margin-bottom: 24px;
+      padding-left: 10px;
+      border-left: 3px solid #444;
+    }
+
+    p {
+      margin-bottom: 24px;
+    }
+
+    ul,
+    ol {
+      padding-left: 24px;
+      color: #ccc;
+      margin-bottom: 32px;
+    }
+
+    li {
+      margin-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    /* 专业代码块 */
+    .code-block {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 16px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9em;
+      color: #e6db74;
+      overflow-x: auto;
+      margin: 16px 0;
+    }
+
+    .cmd-text {
+      color: #a6e22e;
+    }
+
+    .highlight-text {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* 提示框 */
+    .note-box {
+      background: var(--highlight-bg);
+      border-left: 4px solid var(--primary);
+      padding: 20px;
+      border-radius: 4px;
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+
+    .note-box strong {
+      color: var(--primary);
+    }
+
+    /* 路径卡片 */
+    .path-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .path-title {
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    /* 参数表 */
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.95em;
+    }
+
+    .param-table th,
+    .param-table td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .param-table th {
+      color: var(--text-muted);
+      width: 140px;
+    }
+
+    .param-table td {
+      color: #fff;
+      font-family: 'Consolas', monospace;
+    }
+
+    /* 参数解释小字 */
+    .param-desc {
+      display: block;
+      color: #888;
+      font-size: 0.85em;
+      margin-top: 4px;
+    }
+
+    /* 动画配置 */
+    .delay-1 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+      animation-delay: 0.3s;
+    }
+
+    /* 启动方式切换标签页 */
+    .launch-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #888;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      color: #ccc;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: bold;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* 自定义高性能动画 */
+    @keyframes smoothSlideUp {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes smoothFadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .animate-card {
+      opacity: 0;
+      /* 初始隐藏 */
+      animation: smoothSlideUp 0.8s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+      /* Ease-out-cubicish */
+    }
+
+    .animate-header {
+      opacity: 0;
+      animation: smoothFadeIn 1s ease-out forwards;
+    }
+
+    /* 阶梯延迟 */
+    .delay-1 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+      animation-delay: 0.3s;
+    }
+
+    /* 分隔线 */
+    .separation-line {
+      border: 0;
+      height: 1px;
+      margin: 40px 0;
+      background-image: linear-gradient(to right, rgba(255, 179, 0, 0), rgba(255, 179, 0, 0.4), rgba(255, 179, 0, 0));
     }
   </style>
+  <script>
+    function switchTab(mode) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById('tab-' + mode).classList.add('active');
+    }
+  </script>
 </head>
+
 <body>
+
   <div class="container">
-    <h1>SRT 字幕翻译完整流程指南</h1>
-    <p class="subtitle">拿到英文 SRT（其他语言也可以）后，做出稳定可交付的中文字幕；想追求更高级的效果，也给你一条“升级路线”。</p>
+    <header class="animate-header">
+      <h1>SRT 字幕翻译流程指南</h1>
+      <p class="subtitle">从粗翻到精修的完整解决方案</p>
+    </header>
 
-    <section class="card card--sky">
-      <h2>先把软件跑起来（Python 版）</h2>
-      <ol>
-        <li>安装 Python 3.8+（安装时建议勾选 “Add Python to PATH”）。</li>
-        <li>在本项目目录打开命令行，安装依赖：<div style="margin-top:8px;"><span class="mono">python -m pip install -r requirements.txt</span></div></li>
-        <li>启动方式二选一：
-          <ul>
-            <li>双击 <span class="mono">run_gui.bat</span>（更适合小白）</li>
-            <li>命令行运行 <span class="mono">python srt_gui.py</span></li>
-          </ul>
-        </li>
-      </ol>
-      <div class="callout">
-        <strong>提醒：</strong><span class="mono">srt_gui_config.json</span> 通常包含 API Key 等敏感信息，请自行妥善保管，避免上传到公开平台。
+    <!-- 第一步：启动 -->
+    <section class="edu-card animate-card delay-1">
+      <h2>第一步：启动软件</h2>
+      <p>请根据您下载的版本，选择对应的启动方式：</p>
+
+      <div class="launch-tabs">
+        <button class="tab-btn active" onclick="switchTab('green')">🟢 绿色便携版 (推荐)</button>
+        <button class="tab-btn" onclick="switchTab('python')">🐍 源码运行版</button>
+      </div>
+
+      <!-- Tab内容：绿色版 -->
+      <div id="tab-green" class="tab-content active">
+        <p>适合大多数用户，无需安装环境，解压即用。</p>
+        <ol>
+          <li>找到解压后的程序文件夹（请勿放在含中文的路径太深处）。</li>
+          <li>找到名为 <span class="highlight-text">srt_translator_gui_v...</span> 的主程序文件（如 v2.8）。</li>
+          <li><strong>双击运行</strong>即可启动。<br><span style="font-size:0.85em; color:#888;">* 注意：若您的电脑隐藏了文件扩展名，文件名可能不显示 .exe
+              后缀。</span></li>
+        </ol>
+      </div>
+
+      <!-- Tab内容：源码版 -->
+      <div id="tab-python" class="tab-content">
+        <p>适合开发者或已安装 Python 环境的用户。</p>
+        <ol>
+          <li>在软件目录打开终端，安装依赖：<div class="code-block cmd-text">pip install -r requirements.txt</div>
+          </li>
+          <li>双击运行 <span class="highlight-text">run_gui.bat</span> 脚本启动可视化界面。</li>
+        </ol>
+        <p style="font-size:0.9em; color:#888;">* 也可以使用命令 python srt_gui.py 启动。</p>
       </div>
     </section>
 
-    <section class="card card--mint">
-      <h2>普通流程（推荐：简单、够用、稳定）</h2>
-      <ol>
-        <li><strong>字幕翻译器</strong>：选输入/输出文件，选 API，建议先点一次“测试API连接”，再点击“开始翻译”。</li>
-        <li><strong>自动跳转到字幕校验器（必须做）</strong>：翻译完成后，软件会自动切换到“字幕校验器”，并自动填好路径。</li>
-        <li><strong>开始校验</strong>：点击“开始校验”，检查条目编号/数量/结构是否完整。</li>
-        <li><strong>发现缺号/不匹配</strong>：直接点“<strong>一键重翻</strong>”，修好后再校验一次，直到通过。</li>
-      </ol>
-      <div class="callout">
-        <strong>为啥要“强制校验”？</strong>字幕最怕的不是翻得一般，而是<strong>缺条目/编号错</strong>：播放器、剪辑软件会直接乱套。先把结构保住，后面再谈质量升级。
+    <!-- 第二步：配置 -->
+    <section class="edu-card animate-card delay-2">
+      <h2>第二步：连接 AI 大脑 (API 配置)</h2>
+      <p>软件启动后，默认显示“<strong>字幕翻译器</strong>”页面。请在此停留，先完成核心的 API 配置。</p>
+
+      <h3>1. 定位设置区域</h3>
+      <p>界面左侧为“API 设置”面板，用于配置翻译服务的接口参数。</p>
+
+      <h3>2. 参数填写参考</h3>
+      <div class="note-box">
+        <strong>提示：</strong> 请根据您所购买的服务商填写下方参数。
+      </div>
+
+      <table class="param-table">
+        <tr>
+          <th colspan="2" style="color:var(--primary); border-bottom: 2px solid rgba(255,179,0,0.3);">推荐方案：DeepSeek
+            (深度求索)</th>
+        </tr>
+        <tr>
+          <th>API 地址</th>
+          <td class="cmd-text">https://api.deepseek.com/v1/chat/completions</td>
+        </tr>
+        <tr>
+          <th>模型名称</th>
+          <td class="highlight-text">deepseek-chat</td>
+        </tr>
+      </table>
+
+      <div style="height: 20px;"></div>
+
+      <table class="param-table">
+        <tr>
+          <th colspan="2" style="color:#4caf50; border-bottom: 2px solid rgba(76,175,80,0.3);">免费方案：Google Gemini</th>
+        </tr>
+        <tr>
+          <th>API 地址</th>
+          <td class="cmd-text" style="font-size:0.8em;">
+            https://generativelanguage.googleapis.com/v1beta/openai/chat/completions</td>
+        </tr>
+        <tr>
+          <th>模型名称</th>
+          <td>
+            gemini-2.0-flash-exp<br>
+            <span style="color:#888; font-size:0.85em;">(备选：gemini-1.5-pro, gemini-2.0-pro-exp-02-05)</span>
+          </td>
+        </tr>
+        <tr>
+          <th>注意事项</th>
+          <td style="color:#ff6b6b; font-size:0.9em;">
+            如使用 <strong>gemini-3-pro-preview</strong>，必须将线程数限制为 <strong>5</strong>，以免被封禁。
+          </td>
+        </tr>
+      </table>
+      <p style="margin-top:20px;">💡 填写完毕后，请点击 <span class="highlight-text">“测试 API 连接”</span> 按钮，显示“连接成功”即为配置正确。</p>
+    </section>
+
+    <!-- 第三步：选择路径 -->
+    <section class="edu-card animate-card delay-3">
+      <h2>第三步：选择工作模式</h2>
+      <p>本软件提供两种标准工作流程，请根据项目需求选择。</p>
+
+      <!-- 路径 A -->
+      <div class="path-card">
+        <span class="path-title">路径 A：标准流程 (快速直出)</span>
+        <p>适用于对时效性要求较高，或仅需快速获取双语对照字幕的场景。</p>
+        <ol>
+          <li>在“<strong>字幕翻译器</strong>”页面导入源 SRT 文件。</li>
+          <li>
+            <strong>参数配置：</strong>
+            <ul>
+              <li><strong>批次大小 (Batch Size):</strong> <span class="highlight-text">30</span></li>
+              <li><strong>上下文 (Context):</strong> <span class="highlight-text">5</span></li>
+              <li><strong>线程数 (Threads):</strong> DeepSeek 设为20；Gemini 设为5</li>
+            </ul>
+          </li>
+          <li>点击“开始翻译”启动任务。</li>
+          <li>
+            <strong>自动校验：</strong>
+            <br>翻译结束后，软件将<strong>自动跳转</strong>至“<strong>字幕校验器</strong>”页面。
+            <br>请点击“开始校验”。若发现序号缺失，点击“<strong>一键修复</strong>”即可自动补全。
+          </li>
+        </ol>
+      </div>
+
+      <!-- 路径 B -->
+      <div class="path-card" style="border-color: rgba(255, 179, 0, 0.4); background: rgba(255, 179, 0, 0.02);">
+        <span class="path-title">路径 B：高级流程 (深度精修)</span>
+        <p>适用于出版级或专业视频制作，追求极高准确度和流畅度的场景。全流程共分四个阶段：</p>
+
+        <h3 style="margin-top:20px; border-left:None; padding-left:0;">第一阶段：文本纠错与预处理</h3>
+        <ul style="list-style: none; padding-left: 0;">
+          <li>
+            <strong>1. 听写纠错 (Corrector)</strong><br>
+            切换至“<strong>字幕纠错器</strong>”标签页。导入文件，利用 AI 修复 ASR 识别错误。
+            <br>推荐参数：<span class="highlight-text">批次大小: 50</span>, <span class="highlight-text">温度: 0.2</span>。点击“开始纠错”。
+          </li>
+          <li>
+            <strong>2. 纠错结果审核 (Review)</strong><br>
+            人工快速浏览。如需保留原文（AI 误改），请在对应行<strong>单击右键</strong>选择“<strong>保持原文</strong>”。确认无误后点击保存。
+          </li>
+        </ul>
+
+        <hr class="separation-line">
+
+        <h3 style="margin-top:20px; border-left:None; padding-left:0;">第二阶段：基础翻译与校验</h3>
+        <ul style="list-style: none; padding-left: 0;">
+          <li>
+            <strong>3. 执行翻译 (Translator)</strong><br>
+            前往“<strong>字幕翻译器</strong>”页面，导入已纠错的文件。
+            <br>推荐参数：<span class="highlight-text">批次大小: 30</span>, <span class="highlight-text">线程数: 20</span>
+            (不勾选直译模式)。点击“开始翻译”。
+          </li>
+          <li>
+            <strong>4. 完整性校验 (Checker)</strong><br>
+            任务结束后自动跳转至“<strong>字幕校验器</strong>”。
+            <br>点击“开始校验”。若存在漏句，使用“<strong>一键修复</strong>”功能补全。
+          </li>
+        </ul>
+
+        <hr class="separation-line">
+
+        <h3 style="margin-top:20px; border-left:None; padding-left:0;">第三阶段：深度润色与优化</h3>
+        <ul style="list-style: none; padding-left: 0;">
+          <li>
+            <strong>5. 字幕润色 (Polisher)</strong><br>
+            切换至“<strong>字幕润色器</strong>”页面。配置核心参数如下：
+            <div
+              style="background:rgba(0,0,0,0.3); padding:10px; border-radius:4px; margin:8px 0; border: 1px solid #333;">
+              • <strong>字数分配方案：</strong> <span class="highlight-text">最新中文语速方案（实验2）</span><br>
+              • <strong>温度 (Temperature)：</strong> <span class="highlight-text">0.6</span><br>
+              • <strong>批次大小 (Batch Size)：</strong> 30<br>
+              • <strong>线程数 (Threads)：</strong> 20
+            </div>
+            点击“开始润色”。
+          </li>
+          <li>
+            <strong>6. 润色结果审核 (Review)</strong><br>
+            完成后自动跳转至“<strong>纠错/润色审核</strong>”页面。<br>
+            检查译文流畅度。如需回退至直译版本，在对应行<strong>单击右键</strong>选择“<strong>保持原文</strong>”。保存修改。
+          </li>
+        </ul>
+
+        <hr class="separation-line">
+
+        <h3 style="margin-top:20px; border-left:None; padding-left:0;">第四阶段：双语合成</h3>
+        <ul style="list-style: none; padding-left: 0;">
+          <li>
+            <strong>7. 双语输出 (Bilingual)</strong><br>
+            前往“<strong>双语转换器</strong>”页面。
+            <br>分别导入“英文原版”与“最终润色版”字幕，点击合成。系统将以中文时间轴为基准生成完美双语字幕。
+          </li>
+        </ul>
       </div>
     </section>
 
-    <section class="card card--violet">
-      <h2>高级流程（追求质量：纠错 → 审核 → 翻译 → 强制校验 → 润色 → 再审核 → 细修 → 双语）</h2>
-      <ol>
-        <li><strong>字幕纠错器（先处理“听错字”）</strong>：先跑一次纠错，重点修正 ASR 常见错词/同音词，让后续翻译更省心。</li>
-        <li><strong>自动跳转到“纠错/润色审核”（逐条看一眼）</strong>：系统会跳到审核页。你可以选择“保持原文 / 手动编辑”，改完记得<strong>保存修改</strong>。</li>
-        <li><strong>字幕翻译器</strong>：用审核后的字幕去翻译，输出中文字幕。</li>
-        <li><strong>自动跳转到字幕校验器（必须）</strong>：翻译完成后自动切到校验器，点“开始校验”。</li>
-        <li><strong>缺号/不匹配就一键重翻</strong>：修复后再次校验，直到通过。</li>
-        <li><strong>字幕润色器（让中文更像人话）</strong>：对中文译文做润色，提升口语感/一致性/可读性。</li>
-        <li><strong>润色后再次自动跳转到“纠错/润色审核”</strong>：对润色结果再审查一次。不满意的地方同样可以“保持原文”或“手动编辑”，然后保存。</li>
-        <li><strong>专业软件细修（可选）</strong>：Subtitle Edit 等做断行、标点、风格统一、时间轴微调、阅读速度优化等细节。</li>
-        <li><strong>双语转换器（可选）</strong>：用“英文原字幕 + 润色后的中文字幕”合并成双语 SRT。若两份 SRT 时间轴/条目不一致，合并时将以<strong>中文 SRT</strong>为准。</li>
-      </ol>
-    </section>
+    <!-- 删除了独立的第四步，因为参数已融入上述步骤 -->
 
-    <section class="card card--lemon">
-      <h2>推荐参数（速度 & 质量兼顾）</h2>
-      <div class="callout">
-        <strong>字幕翻译器：</strong>批次 <span class="mono">30</span> / 上下文 <span class="mono">5</span> / 线程 <span class="mono">20</span> / 温度 <span class="mono">0.8</span>
-      </div>
-      <div class="callout">
-        <strong>不稳定时：</strong>批次 <span class="mono">10</span> / 上下文 <span class="mono">2</span> / 线程 <span class="mono">5</span>
-      </div>
-      <div class="callout">
-        <strong>小贴士：</strong>不稳定时别硬扛，先降线程数，再降批次大小。跑稳了，效率自然就上来了。
-      </div>
-    </section>
+    <div style="text-align:center; color:#666; font-size: 0.9rem; margin-top: 40px;">
+      SRT Translator · 2026
+    </div>
 
-    <div class="footer">文档对应 GUI：SRT 字幕翻译工具 v2.8</div>
   </div>
 </body>
-</html>
 
+</html>
